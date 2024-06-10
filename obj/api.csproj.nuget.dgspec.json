@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "G:\\Ahmed\\C# assigment\\asp.net web api\\api\\api.csproj": {}
+    "G:\\Ahmed\\C# assigment\\asp.net web api\\api\\AirLine_API\\api.csproj": {}
   },
   "projects": {
-    "G:\\Ahmed\\C# assigment\\asp.net web api\\api\\api.csproj": {
+    "G:\\Ahmed\\C# assigment\\asp.net web api\\api\\AirLine_API\\api.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "G:\\Ahmed\\C# assigment\\asp.net web api\\api\\api.csproj",
+        "projectUniqueName": "G:\\Ahmed\\C# assigment\\asp.net web api\\api\\AirLine_API\\api.csproj",
         "projectName": "api",
-        "projectPath": "G:\\Ahmed\\C# assigment\\asp.net web api\\api\\api.csproj",
+        "projectPath": "G:\\Ahmed\\C# assigment\\asp.net web api\\api\\AirLine_API\\api.csproj",
         "packagesPath": "C:\\Users\\Ahmed Mujtaba\\.nuget\\packages\\",
-        "outputPath": "G:\\Ahmed\\C# assigment\\asp.net web api\\api\\obj\\",
+        "outputPath": "G:\\Ahmed\\C# assigment\\asp.net web api\\api\\AirLine_API\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Ahmed Mujtaba\\AppData\\Roaming\\NuGet\\NuGet.Config",

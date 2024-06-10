@@ -3203,11 +3203,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "g:\\Ahmed\\C# assigment\\asp.net web api\\api\\api.csproj",
+      "projectUniqueName": "G:\\Ahmed\\C# assigment\\asp.net web api\\api\\AirLine_API\\api.csproj",
       "projectName": "api",
-      "projectPath": "g:\\Ahmed\\C# assigment\\asp.net web api\\api\\api.csproj",
+      "projectPath": "G:\\Ahmed\\C# assigment\\asp.net web api\\api\\AirLine_API\\api.csproj",
       "packagesPath": "C:\\Users\\Ahmed Mujtaba\\.nuget\\packages\\",
-      "outputPath": "g:\\Ahmed\\C# assigment\\asp.net web api\\api\\obj\\",
+      "outputPath": "G:\\Ahmed\\C# assigment\\asp.net web api\\api\\AirLine_API\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Ahmed Mujtaba\\AppData\\Roaming\\NuGet\\NuGet.Config",
