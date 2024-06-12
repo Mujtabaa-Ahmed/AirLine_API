@@ -70,5 +70,20 @@ namespace api.Apicontroller
         }
 
        }
+       [HttpDelete]
+       [Route("{id}")]
+       public IActionResult bookingDelete([FromRoute] int id)
+       {
+        var deleted = database.booking.FirstOrDefault(a => a.b_id == id);
+        if(deleted == null)
+        {
+            return NotFound();
+        }else
+        {
+            database.Remove(deleted);
+            database.SaveChanges();
+            return Content("deleted");
+        }
+       }
     }
 }
