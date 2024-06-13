@@ -66,5 +66,20 @@ namespace api.Apicontroller
                 return Ok(flights.ToflightDTO());
             }
         }
+        [HttpDelete]
+        [Route("{id}")]
+        public async Task<IActionResult> filghtDelete([FromRoute] int id)
+        {
+            var DFlight = await database.flight.FirstOrDefaultAsync(a => a.f_id == id);
+            if(DFlight == null)
+            {
+                return NotFound();
+            }else
+            {
+                database.Remove(DFlight);
+                await database.SaveChangesAsync();
+                return Content("Flight is Deleted");
+            }
+        }
     }
 }

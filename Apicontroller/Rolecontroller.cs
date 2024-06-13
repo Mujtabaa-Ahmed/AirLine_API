@@ -65,6 +65,21 @@ namespace api.Apicontroller
                 return Ok(roles.ToroleDTO());
             }
         }
+        [HttpDelete]
+        [Route("{id}")]
+        public async Task<IActionResult> RoleDelete([FromRoute] int id)
+        {
+            var DRole = await database._Role.FirstOrDefaultAsync(a => a.r_id == id);
+            if(DRole == null)
+            {
+                return NotFound();
+            }else
+            {
+                database.Remove(DRole);
+                await database.SaveChangesAsync();
+                return Content("Role is deleted");
+            }
+        }
     }
     
  
