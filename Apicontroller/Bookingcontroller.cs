@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Security.Principal;
 using System.Threading.Tasks;
 using api.Context;
@@ -24,16 +25,17 @@ namespace api.Apicontroller
         }
 
         [HttpGet]
-        public IActionResult getbookings()
+        public async Task<IActionResult> getbookings()
         {
-            var data = database.booking.ToList().Select(c => c.ToBookingDTO());
+            var data = await database.booking.ToListAsync();
+            var stockFromDTO = data.Select(c => c.ToBookingDTO());
 
             return Ok(data);
         }
         [HttpGet("{id}")]
-        public IActionResult getbookingbyid([FromRoute] int id)
+        public async Task<IActionResult> getbookingbyid([FromRoute] int id)
         {
-            var data = database.booking.Find(id);
+            var data = await database.booking.FindAsync(id);
             if (data == null)
             {
                 return NotFound();
@@ -42,18 +44,18 @@ namespace api.Apicontroller
         }
 
         [HttpPost]
-        public IActionResult creteBooking([FromBody] createBookingDTO bDTOs)
+        public async Task<IActionResult> creteBooking([FromBody] createBookingDTO bDTOs)
         {
             var booking = bDTOs.ToCreateBookingDTO();
-            database.booking.Add(booking);
-            database.SaveChanges();
+            await database.booking.AddAsync(booking);
+            await database.SaveChangesAsync();
             return CreatedAtAction(nameof(getbookingbyid) , new {id = booking.b_id}, booking.ToBookingDTO());
         }
        [HttpPut]
        [Route("{id}")]
-       public IActionResult updateBooking([FromRoute] int id,[FromBody] updateBookingDTO uBDTO)
+       public async Task<IActionResult> updateBooking([FromRoute] int id,[FromBody] updateBookingDTO uBDTO)
        {
-        var updateBooking = database.booking.FirstOrDefault(a => a.b_id == id);
+        var updateBooking = await database.booking.FirstOrDefaultAsync(a => a.b_id == id);
 
         if(updateBooking == null)
         {
@@ -65,24 +67,23 @@ namespace api.Apicontroller
             updateBooking.c_id = uBDTO.c_id;
             updateBooking.s_id = uBDTO.s_id;
 
-            database.SaveChanges();
+            await database.SaveChangesAsync();
             return Ok(updateBooking.ToBookingDTO());
         }
-
        }
        [HttpDelete]
        [Route("{id}")]
-       public IActionResult bookingDelete([FromRoute] int id)
+       public async Task<IActionResult> bookingDelete([FromRoute] int id)
        {
-        var deleted = database.booking.FirstOrDefault(a => a.b_id == id);
+        var deleted = await database.booking.FirstOrDefaultAsync(a => a.b_id == id);
         if(deleted == null)
         {
             return NotFound();
         }else
         {
             database.Remove(deleted);
-            database.SaveChanges();
-            return Content("deleted");
+            await database.SaveChangesAsync();
+            return Content("Booking record is deleted");
         }
        }
     }

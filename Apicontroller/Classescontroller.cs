@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using api.Context;
 using api.DTOs.Classes;
 using api.Mapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Identity.Client;
 
@@ -63,6 +65,22 @@ namespace api.Apicontroller
 
                 database.SaveChanges();
                 return Ok(update.ToClassesDTO());
+            }
+        }
+        [HttpDelete]
+        [Route("{id}")]
+        public async Task<IActionResult> DeleteClass([FromRoute] int id)
+        {
+            var Dclass = await database.classes.FirstOrDefaultAsync(a => a.c_id == id);
+
+            if(Dclass == null)
+            {
+                return NotFound();
+            }else
+            {
+                database.Remove(Dclass);
+                await database.SaveChangesAsync();
+                return Content("Class is Deleted");
             }
         }
     }
