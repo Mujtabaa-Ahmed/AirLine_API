@@ -6,6 +6,7 @@ using api.Context;
 using api.DTOs.User;
 using api.Mapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace api.Apicontroller
 {
@@ -19,15 +20,16 @@ namespace api.Apicontroller
             database = data;
         }
         [HttpGet]
-        public IActionResult getusers()
+        public async Task<IActionResult> getusers()
         {
-            var data = database.Users.ToList().Select(u => u.ToUserDTO());
+            var data = await database.Users.ToListAsync();
+            var user = data.Select(u => u.ToUserDTO());
             return Ok(data);
         }
         [HttpGet("{id}")]
-        public IActionResult getusersbyid([FromRoute] int id)
+        public async Task<IActionResult> getusersbyid([FromRoute] int id)
         {
-            var data = database.Users.Find(id);
+            var data = await database.Users.FindAsync(id);
             if (data == null)
             {
                 return NotFound();
@@ -36,18 +38,18 @@ namespace api.Apicontroller
         }
 
         [HttpPost]
-        public IActionResult createuser([FromBody] createUserDTO uDTO)
+        public async Task<IActionResult> createuser([FromBody] createUserDTO uDTO)
         {
             var user = uDTO.ToCreateUserDTO();
-            database.Users.Add(user);
-            database.SaveChanges();
+            await database.Users.AddAsync(user);
+            await database.SaveChangesAsync();
             return CreatedAtAction(nameof(getusersbyid) , new {id = user.u_id}, user.ToUserDTO());
         }
         [HttpPut]
         [Route("{id}")]
-        public IActionResult updateUser([FromRoute] int id,[FromBody] updateUserDTO user)
+        public async Task<IActionResult> updateUser([FromRoute] int id,[FromBody] updateUserDTO user)
         {
-            var users = database.Users.FirstOrDefault(a => a.u_id == id);
+            var users = await database.Users.FirstOrDefaultAsync(a => a.u_id == id);
             if(users == null)
             {
                 return NotFound();
@@ -58,7 +60,7 @@ namespace api.Apicontroller
                 users.u_pass = user.u_pass;
                 users.r_id = user.r_id;
 
-                database.SaveChanges();
+                await database.SaveChangesAsync();
 
                 return Ok(users.ToUserDTO());
             }

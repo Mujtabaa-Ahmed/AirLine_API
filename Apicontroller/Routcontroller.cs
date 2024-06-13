@@ -6,6 +6,7 @@ using api.Context;
 using api.DTOs.Rout;
 using api.Mapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace api.Apicontroller
 {
@@ -21,16 +22,17 @@ namespace api.Apicontroller
         }
 
         [HttpGet]
-        public IActionResult getrout()
+        public async Task<IActionResult> getrout()
         {
-            var data = database.rout.ToList().Select(c => c.ToroutDTO());
+            var data = await database.rout.ToListAsync();
+            var rout = data.Select(c => c.ToroutDTO());
 
             return Ok(data);
         }
         [HttpGet("{id}")]
-        public IActionResult getroutbyid([FromRoute] int id)
+        public async Task<IActionResult> getroutbyid([FromRoute] int id)
         {
-            var data = database.rout.Find(id);
+            var data = await database.rout.FindAsync(id);
             if (data == null)
             {
                 return NotFound();
@@ -39,18 +41,18 @@ namespace api.Apicontroller
         }
   
         [HttpPost]
-        public IActionResult createrout([FromBody] createRoutDTO roDTO)
+        public async Task<IActionResult> createrout([FromBody] createRoutDTO roDTO)
         {
             var rout = roDTO.ToCreateRoutDTO();
-            database.rout.Add(rout);
-            database.SaveChanges();
+            await database.rout.AddAsync(rout);
+            await database.SaveChangesAsync();
             return CreatedAtAction(nameof(getroutbyid) , new{id = rout.Rout_id},rout.ToroutDTO());
         }
         [HttpPut]
         [Route("{id}")]
-        public IActionResult updateRoute([FromRoute] int id, [FromBody] updateRoutDTO rout)
+        public async Task<IActionResult> updateRoute([FromRoute] int id, [FromBody] updateRoutDTO rout)
         {
-            var routs = database.rout.FirstOrDefault(a => a.Rout_id == id);
+            var routs = await database.rout.FirstOrDefaultAsync(a => a.Rout_id == id);
             if(routs == null)
             {
                 return NotFound();
@@ -58,7 +60,7 @@ namespace api.Apicontroller
             {
                 routs.rout_name = rout.rout_name;
 
-                database.SaveChanges();
+                await database.SaveChangesAsync();
                 return Ok(routs.ToroutDTO());
             }
         }

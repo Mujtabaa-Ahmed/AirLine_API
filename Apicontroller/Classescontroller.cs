@@ -25,16 +25,17 @@ namespace api.Apicontroller
         }
 
         [HttpGet]
-        public IActionResult getclasses()
+        public async Task<IActionResult> getclasses()
         {
-            var data = database.classes.ToList().Select(c => c.ToClassesDTO());
+            var data = await database.classes.ToListAsync();
+            var clas = data.Select(c => c.ToClassesDTO());
 
             return Ok(data);
         }
         [HttpGet("{id}")]
-        public IActionResult getclassesbyid([FromRoute] int id)
+        public async Task<IActionResult> getclassesbyid([FromRoute] int id)
         {
-            var data = database.classes.Find(id);
+            var data = await database.classes.FindAsync(id);
             if (data == null)
             {
                 return NotFound();
@@ -43,18 +44,18 @@ namespace api.Apicontroller
         }
 
         [HttpPost]
-        public IActionResult createclass([FromBody] createClassesDTO classes)
+        public async Task<IActionResult> createclass([FromBody] createClassesDTO classes)
         {
             var cls = classes.ToCreateClassDTO();
-            database.Add(cls);
-            database.SaveChanges();
+            await database.AddAsync(cls);
+            await database.SaveChangesAsync();
             return CreatedAtAction(nameof(getclassesbyid) , new {id = cls.c_id}, cls.ToClassesDTO());
         }
         [HttpPut]
         [Route("{id}")]
-        public IActionResult updateClass([FromRoute] int id,[FromBody] updateClassDTO updateClass)
+        public async Task<IActionResult> updateClass([FromRoute] int id,[FromBody] updateClassDTO updateClass)
         {
-            var update = database.classes.FirstOrDefault(a => a.c_id == id);
+            var update = await database.classes.FirstOrDefaultAsync(a => a.c_id == id);
             if(update == null)
             {
                 return NotFound();
@@ -63,7 +64,7 @@ namespace api.Apicontroller
                 update.c_name = updateClass.c_name;
                 update.c_price = updateClass.c_price;
 
-                database.SaveChanges();
+                await database.SaveChangesAsync();
                 return Ok(update.ToClassesDTO());
             }
         }

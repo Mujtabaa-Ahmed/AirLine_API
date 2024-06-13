@@ -7,6 +7,7 @@ using api.DTOs.Schedule;
 using api.Mapper;
 using api.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.SqlServer.Server;
 
 namespace api.Apicontroller
@@ -25,16 +26,17 @@ namespace api.Apicontroller
         }
 
         [HttpGet]
-        public IActionResult getschedule()
+        public async Task<IActionResult> getschedule()
         {
-            var data = database.schedule.ToList().Select(c => c.ToscheduleDTO());
+            var data = await database.schedule.ToListAsync();
+            var schedules = data.Select(c => c.ToscheduleDTO());
 
             return Ok(data);
         }
         [HttpGet("{id}")]
-        public IActionResult getschedulebyid([FromRoute] int id)
+        public async Task<IActionResult> getschedulebyid([FromRoute] int id)
         {
-            var data = database.schedule.Find(id);
+            var data = await database.schedule.FindAsync(id);
             if (data == null)
             {
                 return NotFound();
@@ -43,18 +45,18 @@ namespace api.Apicontroller
         }
 
         [HttpPost]
-        public IActionResult createSchedule([FromBody] createScheduleRequestDTO schedule)
+        public async Task<IActionResult> createSchedule([FromBody] createScheduleRequestDTO schedule)
         {
             var schedules = schedule.ToCreateRequestScheduleDTO();
-            database.schedule.Add(schedules);
-            database.SaveChanges();
+            await database.schedule.AddAsync(schedules);
+            await database.SaveChangesAsync();
             return CreatedAtAction(nameof(getschedulebyid) , new {id = schedules.s_id}, schedules.ToscheduleDTO());
         }
         [HttpPut]
         [Route("{id}")]
-        public IActionResult updateSchedules([FromRoute] int id, [FromBody] updateScheduleDTO schedule)
+        public async Task<IActionResult> updateSchedules([FromRoute] int id, [FromBody] updateScheduleDTO schedule)
         {
-            var schedules = database.schedule.FirstOrDefault(a => a.s_id == id);
+            var schedules = await database.schedule.FirstOrDefaultAsync(a => a.s_id == id);
             if(schedules == null)
             {
                 return NotFound();
@@ -65,7 +67,7 @@ namespace api.Apicontroller
                 schedules.s_arival = schedule.s_arival;
                 schedules.s_departure = schedule.s_departure;
 
-                database.SaveChanges();
+                await database.SaveChangesAsync();
                 return Ok(schedules.ToscheduleDTO());
             }
         }

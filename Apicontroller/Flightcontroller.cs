@@ -6,6 +6,7 @@ using api.Context;
 using api.DTOs.Flight;
 using api.Mapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 
 namespace api.Apicontroller
@@ -21,16 +22,17 @@ namespace api.Apicontroller
         }   
 
         [HttpGet]
-        public IActionResult getflight()
+        public async Task<IActionResult> getflight()
         {
-            var data = database.flight.ToList().Select(c => c.ToflightDTO());
+            var data = await database.flight.ToListAsync();
+            var flight = data.Select(c => c.ToflightDTO());
 
             return Ok(data);
         }
         [HttpGet("{id}")]
-        public IActionResult getflightbyid([FromRoute] int id)
+        public async Task<IActionResult> getflightbyid([FromRoute] int id)
         {
-            var data = database.flight.Find(id);
+            var data = await database.flight.FindAsync(id);
             if (data == null)
             {
                 return NotFound();
@@ -39,19 +41,19 @@ namespace api.Apicontroller
         }
 
         [HttpPost]
-        public IActionResult creteflight([FromBody] createFlightDTO fDTO)
+        public async Task<IActionResult> creteflight([FromBody] createFlightDTO fDTO)
         {
             var flights = fDTO.ToCreateFlightDTO();
-            database.flight.Add(flights);
-            database.SaveChanges();
+            await database.flight.AddAsync(flights);
+            await database.SaveChangesAsync();
             return CreatedAtAction(nameof(getflightbyid) , new {id = flights.f_id}, flights.ToflightDTO());
         }
 
         [HttpPut]
         [Route("{id}")]
-        public IActionResult updateFlight([FromRoute] int id,[FromBody] updateFlightDTO flight)
+        public async Task<IActionResult> updateFlight([FromRoute] int id,[FromBody] updateFlightDTO flight)
         {
-            var flights = database.flight.FirstOrDefault(a => a.f_id == id);
+            var flights = await database.flight.FirstOrDefaultAsync(a => a.f_id == id);
 
             if(flights == null)
             {
@@ -60,7 +62,7 @@ namespace api.Apicontroller
             {
                 flights.f_name = flight.f_name;
 
-                database.SaveChanges();
+                await database.SaveChangesAsync();
                 return Ok(flights.ToflightDTO());
             }
         }

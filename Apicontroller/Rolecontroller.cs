@@ -7,6 +7,7 @@ using api.DTOs.Role;
 using api.Mapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing.Constraints;
+using Microsoft.EntityFrameworkCore;
 
 namespace api.Apicontroller
 {
@@ -22,15 +23,16 @@ namespace api.Apicontroller
         }
 
         [HttpGet]
-        public IActionResult allroles()
+        public async Task<IActionResult> allroles()
         {
-            var data = database._Role.ToList().Select(r => r.ToroleDTO());
+            var data = await database._Role.ToListAsync();
+            var role = data.Select(r => r.ToroleDTO());
             return Ok(data);
         }
         [HttpGet("{id}")]
-        public IActionResult getrolesbyid([FromRoute]int id)
+        public async Task<IActionResult> getrolesbyid([FromRoute]int id)
         {
-            var data = database._Role.Find(id);
+            var data = await database._Role.FindAsync(id);
             if(data == null)
             {
                 return NotFound();
@@ -39,18 +41,18 @@ namespace api.Apicontroller
         }
         
         [HttpPost]
-        public IActionResult createRole([FromBody] createRoleDTO rolee)
+        public async Task<IActionResult> createRole([FromBody] createRoleDTO rolee)
         {
             var role = rolee.ToCreateRoleDTO();
-            database._Role.Add(role);
-            database.SaveChanges();
+            await database._Role.AddAsync(role);
+            await database.SaveChangesAsync();
             return CreatedAtAction(nameof(getrolesbyid) , new {id = role.r_id}, role.ToroleDTO());
         }
         [HttpPut]
         [Route("{id}")]
-        public IActionResult updateRole([FromRoute] int id,[FromBody] updateRoleDTO role)
+        public async Task<IActionResult> updateRole([FromRoute] int id,[FromBody] updateRoleDTO role)
         {
-            var roles = database._Role.FirstOrDefault(a => a.r_id == id);
+            var roles = await database._Role.FirstOrDefaultAsync(a => a.r_id == id);
 
             if(roles == null)
             {
@@ -59,7 +61,7 @@ namespace api.Apicontroller
             {
                 roles.r_name = role.r_name;
 
-                database.SaveChanges();
+                 await database.SaveChangesAsync();
                 return Ok(roles.ToroleDTO());
             }
         }
