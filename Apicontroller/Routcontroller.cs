@@ -64,5 +64,21 @@ namespace api.Apicontroller
                 return Ok(routs.ToroutDTO());
             }
         }
+        [HttpDelete]
+        [Route("{id}")]
+        public async Task<IActionResult> DeleteRoute([FromRoute] int id)
+        {
+            var deleteR = await database.rout.FirstOrDefaultAsync(a => a.Rout_id == id);
+
+            if(deleteR == null)
+            {
+                return NotFound();
+            }else
+            {
+                database.Remove(deleteR);
+                await database.SaveChangesAsync();
+                return Content("Role is deleted");
+            }
+        }
     }
 }

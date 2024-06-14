@@ -71,5 +71,18 @@ namespace api.Apicontroller
                 return Ok(schedules.ToscheduleDTO());
             }
         }
+        public async Task<IActionResult> DeleteShedules([FromRoute] int id)
+        {
+            var deleteS = await database.schedule.FirstOrDefaultAsync(a => a.s_id == id);
+             if(deleteS == null)
+             {
+                return NotFound();
+             }else
+             {
+                database.Remove(deleteS);
+                await database.SaveChangesAsync();
+                return Content("deleted");
+             }
+        }
     }
 }
