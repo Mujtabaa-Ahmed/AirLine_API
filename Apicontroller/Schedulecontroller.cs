@@ -31,7 +31,7 @@ namespace api.Apicontroller
             var data = await database.schedule.ToListAsync();
             var schedules = data.Select(c => c.ToscheduleDTO());
 
-            return Ok(data);
+            return Ok(schedules);
         }
         [HttpGet("{id}")]
         public async Task<IActionResult> getschedulebyid([FromRoute] int id)
@@ -71,6 +71,8 @@ namespace api.Apicontroller
                 return Ok(schedules.ToscheduleDTO());
             }
         }
+        [HttpDelete]
+        [Route("{id}")]
         public async Task<IActionResult> DeleteShedules([FromRoute] int id)
         {
             var deleteS = await database.schedule.FirstOrDefaultAsync(a => a.s_id == id);

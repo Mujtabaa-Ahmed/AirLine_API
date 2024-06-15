@@ -27,7 +27,7 @@ namespace api.Apicontroller
             var data = await database.rout.ToListAsync();
             var rout = data.Select(c => c.ToroutDTO());
 
-            return Ok(data);
+            return Ok(rout);
         }
         [HttpGet("{id}")]
         public async Task<IActionResult> getroutbyid([FromRoute] int id)

@@ -28,9 +28,9 @@ namespace api.Apicontroller
         public async Task<IActionResult> getbookings()
         {
             var data = await database.booking.ToListAsync();
-            var stockFromDTO = data.Select(c => c.ToBookingDTO());
+            var booking = data.Select(c => c.ToBookingDTO());
 
-            return Ok(data);
+            return Ok(booking);
         }
         [HttpGet("{id}")]
         public async Task<IActionResult> getbookingbyid([FromRoute] int id)

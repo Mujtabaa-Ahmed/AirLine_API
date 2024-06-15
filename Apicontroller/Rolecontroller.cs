@@ -27,7 +27,7 @@ namespace api.Apicontroller
         {
             var data = await database._Role.ToListAsync();
             var role = data.Select(r => r.ToroleDTO());
-            return Ok(data);
+            return Ok(role);
         }
         [HttpGet("{id}")]
         public async Task<IActionResult> getrolesbyid([FromRoute]int id)

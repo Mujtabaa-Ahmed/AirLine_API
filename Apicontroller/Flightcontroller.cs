@@ -27,7 +27,7 @@ namespace api.Apicontroller
             var data = await database.flight.ToListAsync();
             var flight = data.Select(c => c.ToflightDTO());
 
-            return Ok(data);
+            return Ok(flight);
         }
         [HttpGet("{id}")]
         public async Task<IActionResult> getflightbyid([FromRoute] int id)

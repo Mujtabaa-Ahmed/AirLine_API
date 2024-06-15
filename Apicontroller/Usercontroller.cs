@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using api.Context;
 using api.DTOs.User;
@@ -24,7 +25,7 @@ namespace api.Apicontroller
         {
             var data = await database.Users.ToListAsync();
             var user = data.Select(u => u.ToUserDTO());
-            return Ok(data);
+            return Ok(user);
         }
         [HttpGet("{id}")]
         public async Task<IActionResult> getusersbyid([FromRoute] int id)
@@ -63,6 +64,21 @@ namespace api.Apicontroller
                 await database.SaveChangesAsync();
 
                 return Ok(users.ToUserDTO());
+            }
+        }
+        [HttpDelete]
+        [Route("{id}")]
+        public async Task<IActionResult> DeleteUser([FromRoute] int id)
+        {
+            var Duser = await database.Users.FirstOrDefaultAsync(a => a.r_id == id);
+            if(Duser == null)
+            {
+                return NotFound();
+            }else
+            {
+                database.Remove(Duser);
+                await database.SaveChangesAsync();
+                return Content("User is deleted");
             }
         }
     }

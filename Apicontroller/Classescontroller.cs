@@ -30,7 +30,7 @@ namespace api.Apicontroller
             var data = await database.classes.ToListAsync();
             var clas = data.Select(c => c.ToClassesDTO());
 
-            return Ok(data);
+            return Ok(clas);
         }
         [HttpGet("{id}")]
         public async Task<IActionResult> getclassesbyid([FromRoute] int id)
