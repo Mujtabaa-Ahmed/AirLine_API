@@ -1,4 +1,6 @@
 using System.Net;
+using AirLine_API.Intrfaces;
+using AirLine_API.Repository;
 using api.Context;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,6 +14,8 @@ builder.Services.AddControllers();
 builder.Services.AddDbContext<db_context>(options =>{
     options.UseSqlServer(builder.Configuration.GetConnectionString("connection"));
 });
+
+builder.Services.AddScoped<IBookingRepository, BookingRepository>();
 
 var app = builder.Build();
 

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Security.Principal;
 using System.Threading.Tasks;
+using AirLine_API.Intrfaces;
 using api.Context;
 using api.DTOs.Bookings;
 using api.Mapper;
@@ -18,16 +19,18 @@ namespace api.Apicontroller
     public class Bookingcontroller : Controller
     {
         private readonly db_context database;
+        private readonly IBookingRepository _bookingRepo;
                 
-        public Bookingcontroller(db_context data)
+        public Bookingcontroller(db_context data, IBookingRepository bookingRepo)
         {
+            _bookingRepo = bookingRepo;
             database = data;
         }
 
         [HttpGet]
         public async Task<IActionResult> getbookings()
         {
-            var data = await database.booking.ToListAsync();
+            var data = await _bookingRepo.GetAllAsync();
             var booking = data.Select(c => c.ToBookingDTO());
 
             return Ok(booking);
