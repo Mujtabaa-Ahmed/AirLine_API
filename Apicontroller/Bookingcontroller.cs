@@ -38,7 +38,7 @@ namespace api.Apicontroller
         [HttpGet("{id}")]
         public async Task<IActionResult> getbookingbyid([FromRoute] int id)
         {
-            var data = await database.booking.FindAsync(id);
+            var data = await _bookingRepo.GetByIdAsync(id);
             if (data == null)
             {
                 return NotFound();
@@ -50,44 +50,32 @@ namespace api.Apicontroller
         public async Task<IActionResult> creteBooking([FromBody] createBookingDTO bDTOs)
         {
             var booking = bDTOs.ToCreateBookingDTO();
-            await database.booking.AddAsync(booking);
-            await database.SaveChangesAsync();
+            await _bookingRepo.CreateAsync(booking);
             return CreatedAtAction(nameof(getbookingbyid) , new {id = booking.b_id}, booking.ToBookingDTO());
         }
        [HttpPut]
        [Route("{id}")]
        public async Task<IActionResult> updateBooking([FromRoute] int id,[FromBody] updateBookingDTO uBDTO)
        {
-        var updateBooking = await database.booking.FirstOrDefaultAsync(a => a.b_id == id);
-
+        var updateBooking = await _bookingRepo.UpdateAsync(id,uBDTO);
         if(updateBooking == null)
         {
             return NotFound();
-        }else
-        {
-            updateBooking.b_quan = uBDTO.b_quan;
-            updateBooking.b_amount = uBDTO.b_amount;
-            updateBooking.c_id = uBDTO.c_id;
-            updateBooking.s_id = uBDTO.s_id;
-
-            await database.SaveChangesAsync();
-            return Ok(updateBooking.ToBookingDTO());
         }
+            return Ok(updateBooking.ToBookingDTO());
        }
        [HttpDelete]
        [Route("{id}")]
        public async Task<IActionResult> bookingDelete([FromRoute] int id)
        {
-        var deleted = await database.booking.FirstOrDefaultAsync(a => a.b_id == id);
+        var deleted = await _bookingRepo.DeleteAsync(id);
         if(deleted == null)
         {
             return NotFound();
-        }else
-        {
-            database.Remove(deleted);
-            await database.SaveChangesAsync();
-            return Content("Booking record is deleted");
         }
+
+        return Content("Booking record is deleted");
+        
        }
     }
 }
