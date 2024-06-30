@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AirLine_API.Intrfaces;
 using api.Context;
 using api.DTOs.Flight;
 using api.Mapper;
@@ -16,9 +17,11 @@ namespace api.Apicontroller
     public class Flightcontroller : Controller
     {
         private readonly db_context database;
-        public Flightcontroller (db_context data)
+        private readonly IFlightRepository _FlightRepo;
+        public Flightcontroller (db_context data,IFlightRepository flight)
         {
             database = data;
+            _FlightRepo = flight;
         }   
 
         [HttpGet]
