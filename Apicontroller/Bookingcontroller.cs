@@ -18,13 +18,11 @@ namespace api.Apicontroller
     [ApiController]
     public class Bookingcontroller : Controller
     {
-        private readonly db_context database;
         private readonly IBookingRepository _bookingRepo;
                 
-        public Bookingcontroller(db_context data, IBookingRepository bookingRepo)
+        public Bookingcontroller(IBookingRepository bookingRepo)
         {
             _bookingRepo = bookingRepo;
-            database = data;
         }
 
         [HttpGet]

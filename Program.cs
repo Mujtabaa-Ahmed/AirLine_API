@@ -16,6 +16,7 @@ builder.Services.AddDbContext<db_context>(options =>{
 });
 
 builder.Services.AddScoped<IBookingRepository, BookingRepository>();
+builder.Services.AddScoped<IClassRepository, ClassRepository>();
 
 var app = builder.Build();
 

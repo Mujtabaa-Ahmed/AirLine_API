@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
+using AirLine_API.Intrfaces;
 using api.Context;
 using api.DTOs.Classes;
 using api.Mapper;
@@ -18,16 +19,17 @@ namespace api.Apicontroller
     public class Classescontroller : Controller
     {
         private readonly db_context database;
-                
-        public Classescontroller(db_context data)
+        private readonly IClassRepository _classRepo;
+        public Classescontroller(IClassRepository classRepo , db_context data)
         {
-            database = data;
+           _classRepo = classRepo;
+           database = data;
         }
 
         [HttpGet]
         public async Task<IActionResult> getclasses()
         {
-            var data = await database.classes.ToListAsync();
+            var data = await _classRepo.GetAllAsync();
             var clas = data.Select(c => c.ToClassesDTO());
 
             return Ok(clas);
@@ -35,7 +37,7 @@ namespace api.Apicontroller
         [HttpGet("{id}")]
         public async Task<IActionResult> getclassesbyid([FromRoute] int id)
         {
-            var data = await database.classes.FindAsync(id);
+            var data = await _classRepo.GetById(id);
             if (data == null)
             {
                 return NotFound();
@@ -47,42 +49,33 @@ namespace api.Apicontroller
         public async Task<IActionResult> createclass([FromBody] createClassesDTO classes)
         {
             var cls = classes.ToCreateClassDTO();
-            await database.AddAsync(cls);
-            await database.SaveChangesAsync();
+            await _classRepo.CreateAsync(cls);
             return CreatedAtAction(nameof(getclassesbyid) , new {id = cls.c_id}, cls.ToClassesDTO());
         }
         [HttpPut]
         [Route("{id}")]
         public async Task<IActionResult> updateClass([FromRoute] int id,[FromBody] updateClassDTO updateClass)
         {
-            var update = await database.classes.FirstOrDefaultAsync(a => a.c_id == id);
+            var update = await _classRepo.UpdateAsync(id,updateClass);
             if(update == null)
             {
                 return NotFound();
-            }else
-            {
-                update.c_name = updateClass.c_name;
-                update.c_price = updateClass.c_price;
-
-                await database.SaveChangesAsync();
-                return Ok(update.ToClassesDTO());
             }
+                 return Ok(update.ToClassesDTO());
+            
         }
         [HttpDelete]
         [Route("{id}")]
         public async Task<IActionResult> DeleteClass([FromRoute] int id)
         {
-            var Dclass = await database.classes.FirstOrDefaultAsync(a => a.c_id == id);
+            var Dclass = await _classRepo.DeleteAsync(id);
 
             if(Dclass == null)
             {
                 return NotFound();
-            }else
-            {
-                database.Remove(Dclass);
-                await database.SaveChangesAsync();
-                return Content("Class is Deleted");
             }
+                return Content("Class is Deleted");
+            
         }
     }
 }
