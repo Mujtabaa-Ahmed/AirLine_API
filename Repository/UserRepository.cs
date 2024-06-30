@@ -17,7 +17,7 @@ namespace AirLine_API.Repository
             database = data;
         }
 
-        public Task<class_users> CreateAsync(class_flight createUser)
+        public Task<class_users> CreateAsync(class_users createUser)
         {
             throw new NotImplementedException();
         }

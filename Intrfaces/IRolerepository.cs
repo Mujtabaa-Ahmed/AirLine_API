@@ -11,7 +11,7 @@ namespace AirLine_API.Intrfaces
     {
         Task<List<class_roles>> GetAllAsync();
         Task<class_roles?> GetByIdAsync(int id);
-        Task<class_roles> CreateAsync(class_flight createRole);
+        Task<class_roles> CreateAsync(class_roles createRole);
         Task<class_roles?> UpdateAsync(int id,updateRoleDTO Role);
         Task<class_roles?> DeleteAsync(int id);
     }

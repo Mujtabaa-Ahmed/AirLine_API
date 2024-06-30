@@ -17,7 +17,7 @@ namespace AirLine_API.Repository
             database = data;
         }
 
-        public Task<class_rout> CreateAsync(class_flight createRoout)
+        public Task<class_rout> CreateAsync(class_rout createRout)
         {
             throw new NotImplementedException();
         }

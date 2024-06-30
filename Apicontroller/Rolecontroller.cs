@@ -16,11 +16,9 @@ namespace api.Apicontroller
     [ApiController]
     public class Rolecontroller : Controller
     {
-        private readonly db_context database;
         private readonly IRoleRepository _roleRepo;
-        public Rolecontroller(db_context data , IRoleRepository repo)
+        public Rolecontroller(IRoleRepository repo)
         {
-            database = data;
             _roleRepo = repo;
         }
 
@@ -34,7 +32,7 @@ namespace api.Apicontroller
         [HttpGet("{id}")]
         public async Task<IActionResult> getrolesbyid([FromRoute]int id)
         {
-            var data = await database._Role.FindAsync(id);
+            var data = await _roleRepo.GetByIdAsync(id);
             if(data == null)
             {
                 return NotFound();
@@ -46,43 +44,31 @@ namespace api.Apicontroller
         public async Task<IActionResult> createRole([FromBody] createRoleDTO rolee)
         {
             var role = rolee.ToCreateRoleDTO();
-            await database._Role.AddAsync(role);
-            await database.SaveChangesAsync();
+            await _roleRepo.CreateAsync(role);
             return CreatedAtAction(nameof(getrolesbyid) , new {id = role.r_id}, role.ToroleDTO());
         }
         [HttpPut]
         [Route("{id}")]
         public async Task<IActionResult> updateRole([FromRoute] int id,[FromBody] updateRoleDTO role)
         {
-            var roles = await database._Role.FirstOrDefaultAsync(a => a.r_id == id);
+            var roles = await _roleRepo.UpdateAsync(id,role);
 
             if(roles == null)
             {
                 return NotFound();
-            }else
-            {
-                roles.r_name = role.r_name;
-
-                 await database.SaveChangesAsync();
-                return Ok(roles.ToroleDTO());
             }
+                return Ok(roles.ToroleDTO());
         }
         [HttpDelete]
         [Route("{id}")]
         public async Task<IActionResult> RoleDelete([FromRoute] int id)
         {
-            var DRole = await database._Role.FirstOrDefaultAsync(a => a.r_id == id);
+            var DRole = await _roleRepo.DeleteAsync(id);
             if(DRole == null)
             {
                 return NotFound();
-            }else
-            {
-                database.Remove(DRole);
-                await database.SaveChangesAsync();
-                return Content("Role is deleted");
-            }
+            }   
+            return Content("Role is deleted");
         }
     }
-    
- 
 }

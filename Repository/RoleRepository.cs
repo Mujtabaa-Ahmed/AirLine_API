@@ -18,14 +18,23 @@ namespace AirLine_API.Repository
             database = data;
         }
 
-        public Task<class_roles> CreateAsync(class_flight createRole)
+        public async Task<class_roles> CreateAsync(class_roles createRole)
         {
-            throw new NotImplementedException();
+            await database._Role.AddAsync(createRole);
+            await database.SaveChangesAsync();
+            return createRole;
         }
 
-        public Task<class_roles?> DeleteAsync(int id)
+        public async Task<class_roles?> DeleteAsync(int id)
         {
-            throw new NotImplementedException();
+            var Drole = await database._Role.FirstOrDefaultAsync(a => a.r_id == id);
+            if(Drole == null)
+            {
+                return null;
+            }
+            database.Remove(Drole);
+            await database.SaveChangesAsync();
+            return Drole;
         }
 
         public async Task<List<class_roles>> GetAllAsync()
@@ -33,14 +42,26 @@ namespace AirLine_API.Repository
             return await database._Role.ToListAsync();
         }
 
-        public Task<class_roles?> GetByIdAsync(int id)
+        public async Task<class_roles?> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            var role = await database._Role.FirstOrDefaultAsync(a => a.r_id == id);
+            if(role == null)
+            {
+                return null;
+            }
+            return role;
         }
 
-        public Task<class_roles?> UpdateAsync(int id, updateRoleDTO Role)
+        public async Task<class_roles?> UpdateAsync(int id, updateRoleDTO Role)
         {
-            throw new NotImplementedException();
+            var Urole = await database._Role.FirstOrDefaultAsync(a => a.r_id == id);
+            if(Urole == null)
+            {
+                return null;
+            }
+            Urole.r_name = Role.r_name;
+            await database.SaveChangesAsync();
+            return Urole;
         }
     }
 }
