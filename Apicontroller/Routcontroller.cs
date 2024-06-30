@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AirLine_API.Intrfaces;
 using api.Context;
 using api.DTOs.Rout;
 using api.Mapper;
@@ -14,11 +15,12 @@ namespace api.Apicontroller
     [ApiController]
     public class Routcontroller : Controller
     {
-       private readonly db_context database;
-                
-        public Routcontroller(db_context data)
+        private readonly db_context database;
+        private readonly IRoutRepository _routRepo;
+        public Routcontroller(db_context data,IRoutRepository repo)
         {
             database = data;
+            _routRepo = repo;
         }
 
         [HttpGet]

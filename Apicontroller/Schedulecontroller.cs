@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AirLine_API.Intrfaces;
 using api.Context;
 using api.DTOs.Schedule;
 using api.Mapper;
@@ -18,11 +19,12 @@ namespace api.Apicontroller
     {
     
     
-       private readonly db_context database;
-                
-        public Schedulecontroller(db_context data)
+        private readonly db_context database;
+        private readonly IScheduleRepository _sheduleRepo;        
+        public Schedulecontroller(db_context data, IScheduleRepository repo)
         {
             database = data;
+            _sheduleRepo = repo;
         }
 
         [HttpGet]

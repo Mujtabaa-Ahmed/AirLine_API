@@ -16,18 +16,16 @@ namespace api.Apicontroller
     [ApiController]
     public class Flightcontroller : Controller
     {
-        private readonly db_context database;
         private readonly IFlightRepository _FlightRepo;
-        public Flightcontroller (db_context data,IFlightRepository flight)
+        public Flightcontroller (IFlightRepository flight)
         {
-            database = data;
             _FlightRepo = flight;
         }   
 
         [HttpGet]
         public async Task<IActionResult> getflight()
         {
-            var data = await database.flight.ToListAsync();
+            var data = await _FlightRepo.GetAllAsync();
             var flight = data.Select(c => c.ToflightDTO());
 
             return Ok(flight);
@@ -35,7 +33,7 @@ namespace api.Apicontroller
         [HttpGet("{id}")]
         public async Task<IActionResult> getflightbyid([FromRoute] int id)
         {
-            var data = await database.flight.FindAsync(id);
+            var data = await _FlightRepo.GetByIdAsync(id);
             if (data == null)
             {
                 return NotFound();
@@ -47,8 +45,7 @@ namespace api.Apicontroller
         public async Task<IActionResult> creteflight([FromBody] createFlightDTO fDTO)
         {
             var flights = fDTO.ToCreateFlightDTO();
-            await database.flight.AddAsync(flights);
-            await database.SaveChangesAsync();
+            await _FlightRepo.CreateAsync(flights);
             return CreatedAtAction(nameof(getflightbyid) , new {id = flights.f_id}, flights.ToflightDTO());
         }
 
@@ -56,33 +53,25 @@ namespace api.Apicontroller
         [Route("{id}")]
         public async Task<IActionResult> updateFlight([FromRoute] int id,[FromBody] updateFlightDTO flight)
         {
-            var flights = await database.flight.FirstOrDefaultAsync(a => a.f_id == id);
+            var flights = await _FlightRepo.UpdateAsync(id,flight);
 
             if(flights == null)
             {
                 return NotFound();
-            }else
-            {
-                flights.f_name = flight.f_name;
-
-                await database.SaveChangesAsync();
-                return Ok(flights.ToflightDTO());
             }
+                return Ok(flights.ToflightDTO());
         }
         [HttpDelete]
         [Route("{id}")]
         public async Task<IActionResult> filghtDelete([FromRoute] int id)
         {
-            var DFlight = await database.flight.FirstOrDefaultAsync(a => a.f_id == id);
+            var DFlight = await _FlightRepo.DeleteAsync(id);
             if(DFlight == null)
             {
                 return NotFound();
-            }else
-            {
-                database.Remove(DFlight);
-                await database.SaveChangesAsync();
-                return Content("Flight is Deleted");
             }
+                return Content("Flight is Deleted");
+            
         }
     }
 }

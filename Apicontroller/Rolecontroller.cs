@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AirLine_API.Intrfaces;
 using api.Context;
 using api.DTOs.Role;
 using api.Mapper;
@@ -16,16 +17,17 @@ namespace api.Apicontroller
     public class Rolecontroller : Controller
     {
         private readonly db_context database;
-
-        public Rolecontroller(db_context data)
+        private readonly IRoleRepository _roleRepo;
+        public Rolecontroller(db_context data , IRoleRepository repo)
         {
             database = data;
+            _roleRepo = repo;
         }
 
         [HttpGet]
         public async Task<IActionResult> allroles()
         {
-            var data = await database._Role.ToListAsync();
+            var data = await _roleRepo.GetAllAsync();
             var role = data.Select(r => r.ToroleDTO());
             return Ok(role);
         }

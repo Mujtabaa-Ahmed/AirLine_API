@@ -6,6 +6,7 @@ using AirLine_API.Intrfaces;
 using api.Context;
 using api.DTOs.Flight;
 using api.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace AirLine_API.Repository
 {
@@ -16,29 +17,52 @@ namespace AirLine_API.Repository
         {
             database = data;
         }
-        public Task<class_flight> CreateAsync(class_flight createGlight)
+        public async Task<class_flight> CreateAsync(class_flight createFlight)
         {
-            throw new NotImplementedException();
+            await database.flight.AddAsync(createFlight);
+            await database.SaveChangesAsync();
+            return createFlight;
         }
 
-        public Task<class_flight?> DeleteAsync(int id)
+        public async Task<class_flight?> DeleteAsync(int id)
         {
-            throw new NotImplementedException();
+            var Dflight = await database.flight.FirstOrDefaultAsync(a => a.f_id == id);
+            if(Dflight == null)
+            {
+                return null;
+            }
+
+            database.Remove(Dflight);
+            await database.SaveChangesAsync();
+            return Dflight;
         }
 
-        public Task<List<class_flight>> GetAllAsync()
+        public async Task<List<class_flight>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return await database.flight.ToListAsync();
         }
 
-        public Task<class_flight?> GetByIdAsync(int id)
+        public async Task<class_flight?> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            var flight = await database.flight.FirstOrDefaultAsync(a => a.f_id == id);
+            if(flight == null)
+            {
+                return null;
+            }
+            return flight;
         }
 
-        public Task<class_flight?> UpdateAsync(int id, updateFlightDTO flight)
+        public async Task<class_flight?> UpdateAsync(int id, updateFlightDTO flight)
         {
-            throw new NotImplementedException();
+            var updateFlight = await database.flight.FirstOrDefaultAsync(a => a.f_id == id);
+            if(updateFlight == null)
+            {
+                return null;
+            }
+
+            updateFlight.f_name = flight.f_name;
+            await database.SaveChangesAsync();
+            return updateFlight;
         }
     }
 }

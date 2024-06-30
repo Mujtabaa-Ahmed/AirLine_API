@@ -11,7 +11,7 @@ namespace AirLine_API.Intrfaces
     {
         Task<List<class_flight>> GetAllAsync();
         Task<class_flight?> GetByIdAsync(int id);
-        Task<class_flight> CreateAsync(class_flight createGlight);
+        Task<class_flight> CreateAsync(class_flight createFlight);
         Task<class_flight?> UpdateAsync(int id,updateFlightDTO flight);
         Task<class_flight?> DeleteAsync(int id);
     }

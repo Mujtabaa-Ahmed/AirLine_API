@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using AirLine_API.Intrfaces;
 using api.Context;
 using api.DTOs.User;
 using api.Mapper;
@@ -16,9 +17,11 @@ namespace api.Apicontroller
     public class Usercontroller : Controller
     {
         private readonly db_context database;
-        public Usercontroller(db_context data)
+        private readonly IUserRepository _userRepo;
+        public Usercontroller(db_context data, IUserRepository repo)
         {
             database = data;
+            _userRepo = repo;
         }
         [HttpGet]
         public async Task<IActionResult> getusers()
