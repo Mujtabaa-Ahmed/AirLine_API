@@ -16,24 +16,22 @@ namespace api.Apicontroller
     [ApiController]
     public class Usercontroller : Controller
     {
-        private readonly db_context database;
         private readonly IUserRepository _userRepo;
         public Usercontroller(db_context data, IUserRepository repo)
         {
-            database = data;
             _userRepo = repo;
         }
         [HttpGet]
         public async Task<IActionResult> getusers()
         {
-            var data = await database.Users.ToListAsync();
+            var data = await _userRepo.GetAllAsync();
             var user = data.Select(u => u.ToUserDTO());
             return Ok(user);
         }
         [HttpGet("{id}")]
         public async Task<IActionResult> getusersbyid([FromRoute] int id)
         {
-            var data = await database.Users.FindAsync(id);
+            var data = await _userRepo.GetByIdAsync(id);
             if (data == null)
             {
                 return NotFound();
@@ -45,42 +43,30 @@ namespace api.Apicontroller
         public async Task<IActionResult> createuser([FromBody] createUserDTO uDTO)
         {
             var user = uDTO.ToCreateUserDTO();
-            await database.Users.AddAsync(user);
-            await database.SaveChangesAsync();
+            await _userRepo.CreateAsync(user);
             return CreatedAtAction(nameof(getusersbyid) , new {id = user.u_id}, user.ToUserDTO());
         }
         [HttpPut]
         [Route("{id}")]
         public async Task<IActionResult> updateUser([FromRoute] int id,[FromBody] updateUserDTO user)
         {
-            var users = await database.Users.FirstOrDefaultAsync(a => a.u_id == id);
+            var users = await _userRepo.UpdateAsync(id,user);
             if(users == null)
             {
                 return NotFound();
-            }else
-            {
-                users.u_name = user.u_name;
-                users.u_mail = user.u_mail;
-                users.u_pass = user.u_pass;
-                users.r_id = user.r_id;
-
-                await database.SaveChangesAsync();
-
-                return Ok(users.ToUserDTO());
             }
+                return Ok(users.ToUserDTO());
         }
         [HttpDelete]
         [Route("{id}")]
         public async Task<IActionResult> DeleteUser([FromRoute] int id)
         {
-            var Duser = await database.Users.FirstOrDefaultAsync(a => a.r_id == id);
+            var Duser = await _userRepo.DeleteAsync(id);
             if(Duser == null)
             {
                 return NotFound();
             }else
             {
-                database.Remove(Duser);
-                await database.SaveChangesAsync();
                 return Content("User is deleted");
             }
         }

@@ -6,6 +6,7 @@ using AirLine_API.Intrfaces;
 using api.Context;
 using api.DTOs.Rout;
 using api.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace AirLine_API.Repository
 {
@@ -17,29 +18,54 @@ namespace AirLine_API.Repository
             database = data;
         }
 
-        public Task<class_rout> CreateAsync(class_rout createRout)
+        public async Task<class_rout> CreateAsync(class_rout createRout)
         {
-            throw new NotImplementedException();
+            await database.rout.AddAsync(createRout);
+            await database.SaveChangesAsync();
+            return createRout;
         }
 
-        public Task<class_rout?> DeleteAsync(int id)
+        public async Task<class_rout?> DeleteAsync(int id)
         {
-            throw new NotImplementedException();
+            var deleteR = await database.rout.FirstOrDefaultAsync(a => a.Rout_id == id);
+
+            if(deleteR == null)
+            {
+                return null;
+            }else
+            {
+                database.Remove(deleteR);
+                await database.SaveChangesAsync();
+                return deleteR;
+            }
         }
 
-        public Task<List<class_rout>> GetAllAsync()
+        public async Task<List<class_rout>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return await database.rout.ToListAsync();
         }
 
-        public Task<class_rout?> GetByIdAsync(int id)
+        public async Task<class_rout?> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            var rout = await database.rout.FirstOrDefaultAsync(a => a.Rout_id == id);
+            if(rout == null)
+            {
+                return null;
+            }
+
+            return rout;
         }
 
-        public Task<class_rout?> UpdateAsync(int id, updateRoutDTO Rout)
+        public async Task<class_rout?> UpdateAsync(int id, updateRoutDTO Rout)
         {
-            throw new NotImplementedException();
+           var routs = await database.rout.FirstOrDefaultAsync(a => a.Rout_id == id);
+            if(routs == null)
+            {
+                return null;
+            }
+                routs.rout_name = Rout.rout_name;
+                await database.SaveChangesAsync();
+                return routs;
         }
     }
 }

@@ -19,18 +19,16 @@ namespace api.Apicontroller
     {
     
     
-        private readonly db_context database;
         private readonly IScheduleRepository _sheduleRepo;        
-        public Schedulecontroller(db_context data, IScheduleRepository repo)
+        public Schedulecontroller(IScheduleRepository repo)
         {
-            database = data;
             _sheduleRepo = repo;
         }
 
         [HttpGet]
         public async Task<IActionResult> getschedule()
         {
-            var data = await database.schedule.ToListAsync();
+            var data = await _sheduleRepo.GetAllAsync();
             var schedules = data.Select(c => c.ToscheduleDTO());
 
             return Ok(schedules);
@@ -38,7 +36,7 @@ namespace api.Apicontroller
         [HttpGet("{id}")]
         public async Task<IActionResult> getschedulebyid([FromRoute] int id)
         {
-            var data = await database.schedule.FindAsync(id);
+            var data = await _sheduleRepo.GetByIdAsync(id);
             if (data == null)
             {
                 return NotFound();
@@ -50,43 +48,30 @@ namespace api.Apicontroller
         public async Task<IActionResult> createSchedule([FromBody] createScheduleRequestDTO schedule)
         {
             var schedules = schedule.ToCreateRequestScheduleDTO();
-            await database.schedule.AddAsync(schedules);
-            await database.SaveChangesAsync();
+            await _sheduleRepo.CreateAsync(schedules);
             return CreatedAtAction(nameof(getschedulebyid) , new {id = schedules.s_id}, schedules.ToscheduleDTO());
         }
         [HttpPut]
         [Route("{id}")]
         public async Task<IActionResult> updateSchedules([FromRoute] int id, [FromBody] updateScheduleDTO schedule)
         {
-            var schedules = await database.schedule.FirstOrDefaultAsync(a => a.s_id == id);
+            var schedules = await _sheduleRepo.UpdateAsync(id,schedule);
             if(schedules == null)
             {
                 return NotFound();
-            }else
-            {
-                schedules.f_id = schedule.f_id;
-                schedules.rout_id = schedule.rout_id;
-                schedules.s_arival = schedule.s_arival;
-                schedules.s_departure = schedule.s_departure;
-
-                await database.SaveChangesAsync();
-                return Ok(schedules.ToscheduleDTO());
             }
+                return Ok(schedules.ToscheduleDTO());
         }
         [HttpDelete]
         [Route("{id}")]
         public async Task<IActionResult> DeleteShedules([FromRoute] int id)
         {
-            var deleteS = await database.schedule.FirstOrDefaultAsync(a => a.s_id == id);
+            var deleteS = await _sheduleRepo.DeleteAsync(id);
              if(deleteS == null)
              {
                 return NotFound();
-             }else
-             {
-                database.Remove(deleteS);
-                await database.SaveChangesAsync();
-                return Content("deleted");
              }
+                return Content("deleted");
         }
     }
 }

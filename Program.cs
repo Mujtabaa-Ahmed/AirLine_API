@@ -1,8 +1,11 @@
 using System.Net;
+using System.Security.Cryptography.Xml;
 using AirLine_API.Intrfaces;
 using AirLine_API.Repository;
 using api.Context;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +14,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
+builder.Services.AddControllers().AddNewtonsoftJson(Options=>
+{
+    Options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+});
 builder.Services.AddDbContext<db_context>(options =>{
     options.UseSqlServer(builder.Configuration.GetConnectionString("connection"));
 });

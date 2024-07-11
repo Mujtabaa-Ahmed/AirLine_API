@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using api.DTOs.Role;
+using api.DTOs.UserDTO;
 using api.Models;
 
 namespace api.Mapper

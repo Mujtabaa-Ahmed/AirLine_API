@@ -11,7 +11,7 @@ namespace AirLine_API.Intrfaces
     {
         Task<List<class_schedule>> GetAllAsync();
         Task<class_schedule?> GetByIdAsync(int id);
-        Task<class_rout> CreateAsync(class_schedule createSchedule);
+        Task<class_schedule> CreateAsync(class_schedule createSchedule);
         Task<class_schedule?> UpdateAsync(int id,updateScheduleDTO Schedule);
         Task<class_schedule?> DeleteAsync(int id);
     }

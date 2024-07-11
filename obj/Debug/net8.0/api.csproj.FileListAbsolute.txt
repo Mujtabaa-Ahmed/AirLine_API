@@ -141,3 +141,7 @@ G:\Ahmed\C# assigment\asp.net web api\api\AirLine_API\obj\Debug\net8.0\refint\ap
 G:\Ahmed\C# assigment\asp.net web api\api\AirLine_API\obj\Debug\net8.0\api.pdb
 G:\Ahmed\C# assigment\asp.net web api\api\AirLine_API\obj\Debug\net8.0\api.genruntimeconfig.cache
 G:\Ahmed\C# assigment\asp.net web api\api\AirLine_API\obj\Debug\net8.0\ref\api.dll
+G:\Ahmed\C# assigment\asp.net web api\api\AirLine_API\bin\Debug\net8.0\Microsoft.AspNetCore.JsonPatch.dll
+G:\Ahmed\C# assigment\asp.net web api\api\AirLine_API\bin\Debug\net8.0\Microsoft.AspNetCore.Mvc.NewtonsoftJson.dll
+G:\Ahmed\C# assigment\asp.net web api\api\AirLine_API\bin\Debug\net8.0\Newtonsoft.Json.dll
+G:\Ahmed\C# assigment\asp.net web api\api\AirLine_API\bin\Debug\net8.0\Newtonsoft.Json.Bson.dll
